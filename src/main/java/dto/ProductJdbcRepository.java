@@ -23,7 +23,7 @@ public class ProductJdbcRepository implements ProductRepository
                     user,
                     password);
         } catch (SQLException e) {
-            System.out.println("Cannot connect to DB");
+            System.out.println("can't connect to DB, wrong url");
             return null;
         }
     }
@@ -47,9 +47,9 @@ public class ProductJdbcRepository implements ProductRepository
                 sum += (end - start);
             }
             productStatement.close();
-            System.out.println("Inserted all in " + sum + " milliseconds");
+            System.out.println("inserted all in " + sum + " milliseconds");
         } catch (SQLException e) {
-            System.out.println("unexpected error occured while trying inserting new row");
+            System.out.println("can't insert new row");
         }
     }
 
@@ -81,7 +81,7 @@ public class ProductJdbcRepository implements ProductRepository
             System.out.println("Inserted all in " + sum + " milliseconds");
 
         } catch (SQLException e) {
-            System.out.println(e.getSQLState());
+            System.out.println("can't insert new row");
         }
     }
 }
