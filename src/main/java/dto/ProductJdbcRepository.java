@@ -4,18 +4,37 @@ import lombok.AllArgsConstructor;
 import models.MyRuntimeException;
 import models.Product;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 
-@AllArgsConstructor
 public class ProductJdbcRepository implements ProductRepository
 {
-    private final String url;
-    private final String user;
-    private final String password;
+    private String url;
+    private String user;
+    private String password;
+
+    public ProductJdbcRepository(String url, String user, String password) {
+        this.url = url;
+        this.user = user;
+        this.password = password;
+        createProductTable();
+    }
+
+    private void createProductTable() {
+        try (Connection connection = getConnection()) {
+            String query = "create table if not exists Product(\n" +
+                    "id int primary key,\n" +
+                    "name varchar(30) not null,\n" +
+                    "type varchar(30) not null,\n" +
+                    "price double not null\n" +
+                    ")";
+            Statement productStatement = connection.prepareStatement(query);
+            productStatement.execute(query);
+            productStatement.close();
+        }  catch (SQLException e) {
+            throw new MyRuntimeException(e.getSQLState(), e.getMessage());
+        }
+    }
 
     private Connection getConnection() throws SQLException {
         return DriverManager.getConnection(
