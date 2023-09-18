@@ -6,7 +6,7 @@ import models.MyRuntimeException;
 import models.Product;
 import parsers.StaxProductParser;
 import parsers.XmlProductParser;
-import services.ProductParserService;
+import services.ParserService;
 import services.ProductParserServiceImpl;
 import utils.FileManager;
 
@@ -16,6 +16,7 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) throws IOException {
         try {
+            long start = System.currentTimeMillis();
             File file = FileManager.getResourceFile("properties.json");
             ObjectMapper mapper = new ObjectMapper();
 
@@ -28,7 +29,7 @@ public class Main {
 
             XmlProductParser staxParser = new StaxProductParser();
 
-            ProductParserService productParserService = new ProductParserServiceImpl(
+            ParserService parserService = new ProductParserServiceImpl(
                     productRepository,
                     staxParser,
                     appConfig.getBatchSize()
@@ -36,7 +37,9 @@ public class Main {
 
             String filepath = FileManager.getAbsoluteFilePath("products.xml");
 
-            productParserService.parseFile(filepath, Product.class);
+            parserService.parseFile(filepath);
+            long end = System.currentTimeMillis();
+            System.out.println(end - start);
 
         } catch (MyRuntimeException e) {
             switch (e.getNumber()) {

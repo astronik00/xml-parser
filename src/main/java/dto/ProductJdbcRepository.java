@@ -27,7 +27,7 @@ public class ProductJdbcRepository implements ProductRepository
     @Override
     public void insertByOne(List<Product> productList) {
         long sum = 0;
-        String query = "insert into product (id, name, type) values (?, ?, ?)";
+        String query = "insert into product (id, name, type, price) values (?, ?, ?, ?)";
 
         try (Connection connection = getConnection()) {
             PreparedStatement productStatement = connection.prepareStatement(query);
@@ -36,6 +36,7 @@ public class ProductJdbcRepository implements ProductRepository
                 productStatement.setInt(1, product.getId());
                 productStatement.setString(2, product.getName());
                 productStatement.setString(3, product.getType());
+                productStatement.setDouble(4, product.getPrice());
                 long start = System.currentTimeMillis();
                 productStatement.executeUpdate();
                 long end = System.currentTimeMillis();
@@ -52,7 +53,7 @@ public class ProductJdbcRepository implements ProductRepository
     @Override
     public void insertByBatches(List<List<Product>> productBatchesList) {
         long sum = 0;
-        String query = "insert into product (id, name, type) values (?, ?, ?)";
+        String query = "insert into product (id, name, type, price) values (?, ?, ?, ?)";
 
         try (Connection connection = getConnection()) {
             connection.setAutoCommit(false);
@@ -63,6 +64,7 @@ public class ProductJdbcRepository implements ProductRepository
                     productStatement.setInt(1, product.getId());
                     productStatement.setString(2, product.getName());
                     productStatement.setString(3, product.getType());
+                    productStatement.setDouble(4, product.getPrice());
                     productStatement.addBatch();
                 }
                 long start = System.currentTimeMillis();

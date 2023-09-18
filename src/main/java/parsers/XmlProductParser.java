@@ -1,7 +1,5 @@
 package parsers;
 
-import models.Product;
-
 import java.util.List;
 import java.util.Map;
 

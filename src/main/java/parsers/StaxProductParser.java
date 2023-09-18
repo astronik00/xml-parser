@@ -1,8 +1,6 @@
 package parsers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import models.MyRuntimeException;
-import models.Product;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -11,12 +9,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 public class StaxProductParser implements XmlProductParser{
@@ -45,6 +41,10 @@ public class StaxProductParser implements XmlProductParser{
 
                 if (res.values().stream().noneMatch(String::isEmpty)) {
                     productMap.put(res.get("id"), res);
+
+                    res = fieldNames
+                            .stream()
+                            .collect(Collectors.toMap(x -> x, x -> ""));
                 }
 
                 streamReader.next();
