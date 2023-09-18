@@ -1,5 +1,7 @@
 package utils;
 
+import models.Product;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,5 +25,11 @@ public class ListManager <T> {
         }
 
         return partitions;
+    }
+
+    public static List<Product> generateProductsData(int size) {
+        return  IntStream.range(1, size)
+                .mapToObj(x -> new Product(x, "Name" + x, "Type" + x, (double)x))
+                .collect(Collectors.toList());
     }
 }

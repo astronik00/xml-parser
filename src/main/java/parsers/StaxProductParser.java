@@ -1,7 +1,6 @@
 package parsers;
 
 import models.MyRuntimeException;
-import models.Product;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -10,16 +9,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-public class StaxProductParser implements XmlProductParser {
+
+public class StaxProductParser implements XmlProductParser{
     @Override
-    public List<Product> parseXml(String inputFile) {
-        Product newProduct = new Product();
-        Map<Integer, Product> productMap = new HashMap<>();
+    public Map<String, Map<String, String>> parseXml(String inputFile, List<String> fieldNames) {
+        Map<String, Map<String, String>> productMap = new HashMap<>();
+
+        Map<String, String> res = fieldNames
+                .stream()
+                .collect(Collectors.toMap(x -> x, x -> ""));
 
         try {
             XMLInputFactory inputFactory = XMLInputFactory.newInstance();
@@ -28,33 +31,26 @@ public class StaxProductParser implements XmlProductParser {
 
             while (streamReader.hasNext()) {
                 if (streamReader.isStartElement()) {
-                    switch (streamReader.getLocalName()) {
-                        case "id": {
-                            newProduct.setId(Integer.parseInt(streamReader.getElementText()));
-                            break;
-                        }
-                        case "name": {
-                            newProduct.setName(streamReader.getElementText());
-                            break;
-                        }
-                        case "type": {
-                            newProduct.setType(streamReader.getElementText());
-                            break;
-                        }
+                    String name = streamReader.getLocalName();
+
+                    if (res.containsKey(name)) {
+                        String value = streamReader.getElementText();
+                        res.put(name, value);
                     }
                 }
 
-                if (newProduct.getId() != null
-                        && newProduct.getName() != null
-                        && newProduct.getType() != null) {
-                    productMap.put(newProduct.getId(), newProduct);
-                    newProduct = new Product();
+                if (res.values().stream().noneMatch(String::isEmpty)) {
+                    productMap.put(res.get("id"), res);
+
+                    res = fieldNames
+                            .stream()
+                            .collect(Collectors.toMap(x -> x, x -> ""));
                 }
 
                 streamReader.next();
-
             }
-            return new ArrayList<>(productMap.values());
+
+            return productMap;
 
         } catch (XMLStreamException e) {
             throw new MyRuntimeException("1", "Can't parse " + inputFile);

@@ -3,9 +3,10 @@ import configurations.AppConfig;
 import dto.ProductJdbcRepository;
 import dto.ProductRepository;
 import models.MyRuntimeException;
+import models.Product;
 import parsers.StaxProductParser;
 import parsers.XmlProductParser;
-import services.ProductParserService;
+import services.ParserService;
 import services.ProductParserServiceImpl;
 import utils.FileManager;
 
@@ -15,6 +16,7 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) throws IOException {
         try {
+            long start = System.currentTimeMillis();
             File file = FileManager.getResourceFile("properties.json");
             ObjectMapper mapper = new ObjectMapper();
 
@@ -27,7 +29,7 @@ public class Main {
 
             XmlProductParser staxParser = new StaxProductParser();
 
-            ProductParserService productParserService = new ProductParserServiceImpl(
+            ParserService parserService = new ProductParserServiceImpl(
                     productRepository,
                     staxParser,
                     appConfig.getBatchSize()
@@ -35,7 +37,9 @@ public class Main {
 
             String filepath = FileManager.getAbsoluteFilePath("products.xml");
 
-            productParserService.parseFile(filepath);
+            parserService.parseFile(filepath);
+            long end = System.currentTimeMillis();
+            System.out.println("Total work time: " + (end - start));
 
         } catch (MyRuntimeException e) {
             switch (e.getNumber()) {
@@ -47,7 +51,7 @@ public class Main {
                     System.out.print("SqlException: Wrong url credentials. ");
                     break;
                 case "28000":
-                    System.out.print("SqlException: Wrong db user credentials. ");
+                    System.out.print("SqlException: Wrong username or password. ");
                     break;
                 case "42000":
                     System.out.print("SqlException: Wrong db name. ");
@@ -55,7 +59,7 @@ public class Main {
             }
             System.out.println(e.getMessage());
         } catch (Exception e) {
-            System.out.println("Exception: Unknown exception");
+            System.out.println("Exception: Unknown exception. " + e.getMessage());
         }
     }
 }
