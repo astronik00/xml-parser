@@ -3,6 +3,7 @@ import configurations.AppConfig;
 import dto.ProductJdbcRepository;
 import dto.ProductRepository;
 import models.MyRuntimeException;
+import models.Product;
 import parsers.StaxProductParser;
 import parsers.XmlProductParser;
 import services.ProductParserService;
@@ -35,7 +36,7 @@ public class Main {
 
             String filepath = FileManager.getAbsoluteFilePath("products.xml");
 
-            productParserService.parseFile(filepath);
+            productParserService.parseFile(filepath, Product.class);
 
         } catch (MyRuntimeException e) {
             switch (e.getNumber()) {
@@ -47,7 +48,7 @@ public class Main {
                     System.out.print("SqlException: Wrong url credentials. ");
                     break;
                 case "28000":
-                    System.out.print("SqlException: Wrong db user credentials. ");
+                    System.out.print("SqlException: Wrong username or password. ");
                     break;
                 case "42000":
                     System.out.print("SqlException: Wrong db name. ");
@@ -55,7 +56,7 @@ public class Main {
             }
             System.out.println(e.getMessage());
         } catch (Exception e) {
-            System.out.println("Exception: Unknown exception");
+            System.out.println("Exception: Unknown exception. " + e.getMessage());
         }
     }
 }

@@ -1,5 +1,5 @@
 package services;
 
 public interface ProductParserService {
-    void parseFile(String filepath);
+    void parseFile (String filepath, Class classToParse);
 }
