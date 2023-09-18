@@ -1,12 +1,10 @@
 package models;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
 public class Product {

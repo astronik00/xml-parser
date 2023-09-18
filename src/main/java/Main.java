@@ -39,7 +39,7 @@ public class Main {
 
             parserService.parseFile(filepath);
             long end = System.currentTimeMillis();
-            System.out.println(end - start);
+            System.out.println("Total work time: " + (end - start));
 
         } catch (MyRuntimeException e) {
             switch (e.getNumber()) {
