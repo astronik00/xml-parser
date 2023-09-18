@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class ListManager <T> {
-    // longer working but more beautiful...
+    // slower... but more beautiful...
     public static <T> List<List<T>> partitions_copy(List <T> listToSplit, int n) {
         return IntStream.range(0, listToSplit.size())
                 .filter(i -> i % n == 0)
@@ -14,6 +14,7 @@ public class ListManager <T> {
                 .collect(Collectors.toList());
     }
 
+    // faster... but less beautiful...
     public static <T> List<List<T>> partitions(List <T> listToSplit, int n) {
         List<List<T>> partitions = new ArrayList<>();
 

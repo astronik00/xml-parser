@@ -1,5 +1,7 @@
 package utils;
 
+import models.MyRuntimeException;
+
 import java.io.File;
 import java.net.URL;
 import java.util.Objects;
@@ -9,14 +11,13 @@ public class FileManager {
         try {
             URL path = FileManager.class.getResource("/" + name);
             return new File(path.getFile());
-        } catch (Exception e) {
-            System.out.println("error occurred during reading file");
-            return null;
+        } catch (NullPointerException e) {
+            throw new MyRuntimeException("2", "File " + name + " not found");
         }
     }
 
     public static String getAbsoluteFilePath(String name) {
         File file = getResourceFile(name);
-        return Objects.requireNonNull(file).getAbsolutePath();
+        return file.getAbsolutePath();
     }
 }

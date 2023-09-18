@@ -1,6 +1,7 @@
 package dto;
 
 import lombok.AllArgsConstructor;
+import models.MyRuntimeException;
 import models.Product;
 
 import java.sql.Connection;
@@ -16,18 +17,12 @@ public class ProductJdbcRepository implements ProductRepository
     private final String user;
     private final String password;
 
-    public Connection getConnection() {
-        try{
-            return DriverManager.getConnection(
-                    url,
-                    user,
-                    password);
-        } catch (SQLException e) {
-            System.out.println("can't connect to DB, wrong url");
-            return null;
-        }
+    private Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(
+                url,
+                user,
+                password);
     }
-
 
     @Override
     public void insertByOne(List<Product> productList) {
@@ -48,8 +43,9 @@ public class ProductJdbcRepository implements ProductRepository
             }
             productStatement.close();
             System.out.println("inserted all in " + sum + " milliseconds");
+
         } catch (SQLException e) {
-            System.out.println("can't insert new row");
+            throw new MyRuntimeException(e.getSQLState(), e.getMessage());
         }
     }
 
@@ -80,8 +76,9 @@ public class ProductJdbcRepository implements ProductRepository
             productStatement.close();
             System.out.println("Inserted all in " + sum + " milliseconds");
 
-        } catch (SQLException e) {
-            System.out.println("can't insert new row");
+        }
+        catch (SQLException e) {
+            throw new MyRuntimeException(e.getSQLState(), e.getMessage());
         }
     }
 }

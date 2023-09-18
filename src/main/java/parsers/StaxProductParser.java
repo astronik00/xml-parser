@@ -1,5 +1,6 @@
 package parsers;
 
+import models.MyRuntimeException;
 import models.Product;
 
 import javax.xml.stream.XMLInputFactory;
@@ -9,11 +10,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class StaxProductParser implements XmlProductParser {
     @Override
-    public Optional<List<Product>> parseXml(String inputFile) {
+    public List<Product> parseXml(String inputFile) {
         Product newProduct = new Product();
         Map<Integer, Product> productMap = new HashMap<>();
 
@@ -50,14 +54,12 @@ public class StaxProductParser implements XmlProductParser {
                 streamReader.next();
 
             }
-            return Optional.of(new ArrayList<>(productMap.values()));
+            return new ArrayList<>(productMap.values());
 
         } catch (XMLStreamException e) {
-            System.out.println("can't parse xml file");
-            return Optional.empty();
+            throw new MyRuntimeException("1", "Can't parse " + inputFile);
         } catch (IOException e) {
-            System.out.println("can't open file " + inputFile);
-            return Optional.empty();
+            throw new MyRuntimeException("2", "Can't open " + inputFile);
         }
     }
 }
