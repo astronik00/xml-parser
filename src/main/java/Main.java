@@ -1,11 +1,10 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
 import configurations.AppConfig;
-import dto.ProductJdbcRepository;
-import dto.ProductRepository;
 import models.MyRuntimeException;
-import models.Product;
 import parsers.StaxProductParser;
 import parsers.XmlProductParser;
+import repositories.ProductJdbcRepository;
+import repositories.ProductRepository;
 import services.ParserService;
 import services.ProductParserServiceImpl;
 import utils.FileManager;
@@ -54,7 +53,7 @@ public class Main {
                     System.out.print("SqlException: Wrong username or password. ");
                     break;
                 case "42000":
-                    System.out.print("SqlException: Wrong db name. ");
+                    System.out.print("SqlException: Syntax error or access violation. ");
                     break;
             }
             System.out.println(e.getMessage());

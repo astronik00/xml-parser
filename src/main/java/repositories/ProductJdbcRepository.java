@@ -1,6 +1,5 @@
-package dto;
+package repositories;
 
-import lombok.AllArgsConstructor;
 import models.MyRuntimeException;
 import models.Product;
 
